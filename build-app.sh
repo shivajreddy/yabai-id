@@ -1,23 +1,32 @@
 #!/usr/bin/env bash
-# Builds yabai-id.app — a macOS app bundle that can be dragged to /Applications.
+# Builds a universal yabai-id.app (Intel + Apple Silicon).
 set -euo pipefail
 
-APP_NAME="yabai-id"
-BUNDLE="${APP_NAME}.app"
-BINARY_NAME="yabai-id"
+APP="yabai-id.app"
 
-echo "Building release binary..."
-cargo build --release
+echo "Adding Rust targets..."
+rustup target add x86_64-apple-darwin aarch64-apple-darwin
 
-echo "Assembling ${BUNDLE}..."
-rm -rf "${BUNDLE}"
-mkdir -p "${BUNDLE}/Contents/MacOS"
-mkdir -p "${BUNDLE}/Contents/Resources"
+echo "Building x86_64 (Intel)..."
+cargo build --release --target x86_64-apple-darwin
 
-cp "target/release/${BINARY_NAME}"   "${BUNDLE}/Contents/MacOS/${BINARY_NAME}"
-cp "assets/Info.plist"               "${BUNDLE}/Contents/Info.plist"
-cp "assets/AppIcon.icns"             "${BUNDLE}/Contents/Resources/AppIcon.icns"
+echo "Building aarch64 (Apple Silicon)..."
+cargo build --release --target aarch64-apple-darwin
 
-echo "Done: ${BUNDLE}"
+echo "Creating universal binary..."
+lipo -create \
+    target/x86_64-apple-darwin/release/yabai-id \
+    target/aarch64-apple-darwin/release/yabai-id \
+    -output target/release-universal-yabai-id
+
+echo "Assembling ${APP}..."
+rm -rf "$APP"
+mkdir -p "$APP/Contents/MacOS"
+mkdir -p "$APP/Contents/Resources"
+cp target/release-universal-yabai-id "$APP/Contents/MacOS/yabai-id"
+cp assets/Info.plist                  "$APP/Contents/Info.plist"
+cp assets/AppIcon.icns                "$APP/Contents/Resources/AppIcon.icns"
+
+echo "Done: ${APP}"
 echo ""
-echo "Drag ${BUNDLE} to /Applications to install."
+echo "Drag ${APP} to /Applications to install."

@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build:
-    name: Build macOS app bundle
+    name: Build universal macOS app bundle
     runs-on: macos-latest
 
     steps:
@@ -19,6 +19,8 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-apple-darwin,aarch64-apple-darwin
 
       - name: Cache cargo
         uses: actions/cache@v4
@@ -27,10 +29,20 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-universal-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Build release binary
-        run: cargo build --release
+      - name: Build x86_64 (Intel)
+        run: cargo build --release --target x86_64-apple-darwin
+
+      - name: Build aarch64 (Apple Silicon)
+        run: cargo build --release --target aarch64-apple-darwin
+
+      - name: Create universal binary with lipo
+        run: |
+          lipo -create \
+            target/x86_64-apple-darwin/release/yabai-id \
+            target/aarch64-apple-darwin/release/yabai-id \
+            -output target/release-universal-yabai-id
 
       - name: Assemble app bundle
         run: |
@@ -38,9 +50,9 @@ jobs:
           rm -rf "$APP"
           mkdir -p "$APP/Contents/MacOS"
           mkdir -p "$APP/Contents/Resources"
-          cp target/release/yabai-id  "$APP/Contents/MacOS/yabai-id"
-          cp assets/Info.plist         "$APP/Contents/Info.plist"
-          cp assets/AppIcon.icns       "$APP/Contents/Resources/AppIcon.icns"
+          cp target/release-universal-yabai-id "$APP/Contents/MacOS/yabai-id"
+          cp assets/Info.plist                  "$APP/Contents/Info.plist"
+          cp assets/AppIcon.icns                "$APP/Contents/Resources/AppIcon.icns"
 
       - name: Zip app bundle
         run: zip -r yabai-id.zip yabai-id.app
