@@ -1,5 +1,6 @@
 # yabai-id
 
+[![crates.io](https://img.shields.io/crates/v/yabai-id.svg)](https://crates.io/crates/yabai-id)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A macOS menu bar spaces indicator for [yabai](https://github.com/koekeishiya/yabai), written in Rust.
@@ -29,19 +30,25 @@ Space focus commands (`space --focus`) are sent to yabai via its Unix socket usi
 - [yabai](https://github.com/koekeishiya/yabai) running
 - Rust toolchain (to build from source)
 
-## Build & run
+## Install
+
+```sh
+cargo install yabai-id
+```
+
+Then run:
+
+```sh
+yabai-id
+```
+
+## Build from source
 
 ```sh
 git clone https://github.com/shivajreddy/yabai-id.git
 cd yabai-id
 cargo build --release
 ./target/release/yabai-id
-```
-
-Or during development:
-
-```sh
-cargo run
 ```
 
 ## Optional: yabai signal integration
