@@ -1,0 +1,51 @@
+[package]
+name = "yabai-id"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "macOS menu bar spaces indicator for yabai, written in Rust"
+repository = "https://github.com/shivajreddy/yabai-id"
+
+[[bin]]
+name = "yabai-id"
+path = "src/main.rs"
+
+[dependencies]
+objc2 = "0.6.4"
+objc2-foundation = { version = "0.3.2", features = [
+    "NSArray",
+    "NSAttributedString",
+    "NSDictionary",
+    "NSNotification",
+    "NSObject",
+    "NSString",
+    "NSThread",
+] }
+objc2-app-kit = { version = "0.3.2", features = [
+    "NSApplication",
+    "NSAttributedString",
+    "NSBezierPath",
+    "NSButton",
+    "NSColor",
+    "NSColorSpace",
+    "NSEvent",
+    "NSFont",
+    "NSFontDescriptor",
+    "NSGraphicsContext",
+    "NSImage",
+    "NSMenu",
+    "NSMenuItem",
+    "NSResponder",
+    "NSRunningApplication",
+    "NSStatusBar",
+    "NSStatusBarButton",
+    "NSStatusItem",
+    "NSStringDrawing",
+    "NSTrackingArea",
+    "NSView",
+    "NSWorkspace",
+] }
+dispatch2 = "0.3.1"
+libc = "0.2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
