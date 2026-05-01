@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build macOS app bundle
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build release binary
+        run: cargo build --release
+
+      - name: Assemble app bundle
+        run: |
+          APP="yabai-id.app"
+          rm -rf "$APP"
+          mkdir -p "$APP/Contents/MacOS"
+          mkdir -p "$APP/Contents/Resources"
+          cp target/release/yabai-id  "$APP/Contents/MacOS/yabai-id"
+          cp assets/Info.plist         "$APP/Contents/Info.plist"
+          cp assets/AppIcon.icns       "$APP/Contents/Resources/AppIcon.icns"
+
+      - name: Zip app bundle
+        run: zip -r yabai-id.zip yabai-id.app
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: yabai-id.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

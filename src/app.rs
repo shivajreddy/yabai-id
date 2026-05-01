@@ -14,8 +14,8 @@ use objc2_app_kit::{
     NSView, NSWorkspace, NSWorkspaceActiveSpaceDidChangeNotification,
 };
 use objc2_foundation::{
-    ns_string, MainThreadMarker, NSNotification, NSObject, NSObjectProtocol,
-    NSPoint, NSRect, NSSize, NSString,
+    ns_string, MainThreadMarker, NSNotification, NSObject, NSObjectProtocol, NSPoint, NSRect,
+    NSSize, NSString,
 };
 
 use crate::skylight::{self, SLSpace};
@@ -25,9 +25,9 @@ type CGFloat = f64;
 
 // ── Layout constants ──────────────────────────────────────────────────────────
 
-const BUTTON_W: CGFloat = 26.0;
-const BUTTON_H: CGFloat = 18.0;
-const BUTTON_PADDING: CGFloat = 3.0;
+const BUTTON_W: CGFloat = 24.0;
+const BUTTON_H: CGFloat = 15.0;
+const BUTTON_PADDING: CGFloat = 5.0;
 const SEPARATOR_W: CGFloat = 8.0;
 const CORNER_RADIUS: CGFloat = 6.0;
 const BORDER_WIDTH: CGFloat = 1.0;
@@ -201,9 +201,8 @@ fn draw_spaces(state: &AppState) {
 
 fn draw_button(rect: NSRect, space: &SLSpace, label: usize) {
     let label = label.to_string();
-    let path = NSBezierPath::bezierPathWithRoundedRect_xRadius_yRadius(
-        rect, CORNER_RADIUS, CORNER_RADIUS,
-    );
+    let path =
+        NSBezierPath::bezierPathWithRoundedRect_xRadius_yRadius(rect, CORNER_RADIUS, CORNER_RADIUS);
 
     if space.is_active {
         // Fill white for active.
@@ -359,7 +358,6 @@ impl AppDelegate {
         self.update_view_size();
         self.rebuild_menu();
     }
-
 
     fn update_view_size(&self) {
         let view_borrow = self.ivars().spaces_view.borrow();

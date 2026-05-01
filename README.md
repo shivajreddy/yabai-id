@@ -32,23 +32,30 @@ Space focus commands (`space --focus`) are sent to yabai via its Unix socket usi
 
 ## Install
 
+### Download (recommended)
+
+1. Download `yabai-id.zip` from the [latest release](https://github.com/shivajreddy/yabai-id/releases/latest)
+2. Unzip it
+3. Drag `yabai-id.app` into `/Applications`
+4. Launch it from Launchpad or Spotlight
+
+> **First launch:** macOS may show a security prompt since the app is not notarized.
+> Open **System Settings → Privacy & Security**, scroll down, and click **Open Anyway**.
+
+### Via cargo
+
 ```sh
 cargo install yabai-id
-```
-
-Then run:
-
-```sh
 yabai-id
 ```
 
-## Build from source
+### Build from source
 
 ```sh
 git clone https://github.com/shivajreddy/yabai-id.git
 cd yabai-id
-cargo build --release
-./target/release/yabai-id
+./build-app.sh
+# then drag yabai-id.app to /Applications
 ```
 
 ## Optional: yabai signal integration
