@@ -85,6 +85,7 @@ pub struct SLSpace {
     pub display_index: usize, // 0-based display index
     pub is_current: bool,     // visible on its display
     pub is_active: bool,      // visible AND on the active (menu-bar) display
+    pub is_fullscreen: bool,  // type == 4 (Mission Control fullscreen app)
 }
 
 /// Read the current space layout directly from SkyLight.
@@ -161,14 +162,16 @@ unsafe fn read_spaces() -> Vec<SLSpace> {
         for si in 0..space_count {
             let space_dict = CFArrayGetValueAtIndex(spaces_array, si);
             let id64 = dict_u64(space_dict, "id64").unwrap_or(0);
+            let space_type = dict_u64(space_dict, "type").unwrap_or(0);
             let is_current = current_id.map_or(false, |c| c == id64);
 
-                result.push(SLSpace {
-                    id64,
-                    display_index: di as usize,
-                    is_current,
-                    is_active: is_current && is_active_display,
-                });
+            result.push(SLSpace {
+                id64,
+                display_index: di as usize,
+                is_current,
+                is_active: is_current && is_active_display,
+                is_fullscreen: space_type == 4,
+            });
         }
     }
 

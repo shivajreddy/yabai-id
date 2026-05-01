@@ -200,7 +200,11 @@ fn draw_spaces(state: &AppState) {
 }
 
 fn draw_button(rect: NSRect, space: &SLSpace, label: usize) {
-    let label = label.to_string();
+    let label = if space.is_fullscreen {
+        "F".to_string()
+    } else {
+        label.to_string()
+    };
     let path =
         NSBezierPath::bezierPathWithRoundedRect_xRadius_yRadius(rect, CORNER_RADIUS, CORNER_RADIUS);
 
